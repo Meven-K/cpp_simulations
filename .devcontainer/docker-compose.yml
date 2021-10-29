@@ -1,0 +1,17 @@
+version: "3"  # optional since v1.27.0
+
+services:
+  app:
+    build: 
+      context: .
+      args:
+        PROXY: ${PROXY} 
+        VARIANT: debian-11
+    environment:
+      - DISPLAY=${DISPLAY}
+    
+    volumes:
+      - ..:/usr/src/app:cached
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    
+    command: /bin/sh -c "while sleep 1000; do :; done" 
