@@ -6,16 +6,14 @@
 
 #include "Universe.h"
 #include "Star.h"
+#include "Barnes.h"
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    // Test
-    Star s1 = Star(1, 1, 1);
-    cout << s1 << endl;
 
-    Universe u1 = Universe();
+    Universe u1 = Universe(200, 100000);
     cout << u1 << endl;
 
     // main
@@ -23,31 +21,48 @@ int main(int argc, char *argv[])
     SDL_WM_SetCaption("Mon premier programme OpenGL !",NULL);
     SDL_SetVideoMode(640, 480, 32, SDL_OPENGL);
 
-    bool continuer = true;
     SDL_Event event;
 
-    while (continuer)
+    // Time managment
+    Uint32 last_time = SDL_GetTicks();
+    Uint32 current_time,ellapsed_time;
+    Uint32 start_time; // for fps limitation
+    int step = 0;
+
+    for (;;)
     {
-        SDL_WaitEvent(&event);
-        switch(event.type)
+        cerr << endl <<endl <<  "Step " << step << endl;
+        step ++;
+
+        start_time = SDL_GetTicks(); 
+        while (SDL_PollEvent(&event))
         {
-            case SDL_QUIT:
-                continuer = false;
+
+            switch(event.type)
+            {
+                case SDL_QUIT:
+                exit(0);
+                break;
+            }
         }
 
-        glClear(GL_COLOR_BUFFER_BIT);
-        glMatrixMode(GL_MODELVIEW);
+        // Time computation
+        current_time = SDL_GetTicks();
+        ellapsed_time = current_time - last_time;
+        last_time = current_time;
 
-        glPointSize( 2 );
+        // Compute next iteration of the universe
+        u1.compute(ellapsed_time);
+        // Display universe
+        u1.display();
 
-        glBegin(GL_POINTS);
-            // glColor3f(1,1,1);    glVertex3d(-0.75,-0.75, -0.9); 
-            // glColor3f(1,1,1);    glVertex3d(0,0.75, 0.9);  
-            // glColor3f(1,1,1);    glVertex3d(0.75,-0.75, 0); 
-        glEnd();
+        // wait until next frame
+        ellapsed_time = SDL_GetTicks() - start_time;
+        if (ellapsed_time < 10)
+        {
+            SDL_Delay(10 - ellapsed_time);
+        }
 
-        glFlush();
-        SDL_GL_SwapBuffers();
     }
 
     SDL_Quit();
