@@ -4,7 +4,7 @@
 // Contructors
 Universe::Universe() {
     // by default, n_stars = 10;
-    this->nStars = 10;
+    this->nStars = 0;
     this->generate();
 }
 
@@ -31,6 +31,58 @@ void Universe::generate(int dx, int dy) {
 }
 
 
+void generateGalaxyFrom(vector<Star> &stars, int x=0, int y=0, int taille=1000, int n=250, vector<double> color={1, 1, 1}) {
+    default_random_engine generator;
+    normal_distribution<double> distribution(taille,taille);
+
+    // generate a random galaxy
+    for (int j=0; j<n; j++) {
+        // generate a star from galaxy
+        Star s = Star();
+        vector<double> randomVectorPos = v3Rand(distribution(generator), distribution(generator));
+        
+        // Generate speed
+        vector<double> speed = {0, 0};
+        vector<double> d = dist(randomVectorPos, vector<double> {0, 0});
+        speed[0] = 1.5 * d[1] / d[2];
+        speed[1] = -1.5 * d[0] / d[2];
+        
+        s.setSpeed(speed);
+        
+        // set pos
+        randomVectorPos[0] += x;
+        randomVectorPos[1] += y;
+        s.setPos(randomVectorPos);
+
+        // set color
+        s.color = color;
+
+        stars.push_back(s);        
+    }
+
+}
+
+void Universe::generateGalaxy(int ng, int n) {
+    this->size = 5000;
+    this->nStars = n;
+    
+    if (ng==1) generateGalaxyFrom(this->stars, 0, 0, 500, n, vector<double> {0,1,1});
+
+
+    if (ng==2) {
+        generateGalaxyFrom(this->stars, -1500, 1500, 500, n/2, vector<double> {0,1,1});
+        generateGalaxyFrom(this->stars, 1500, -1500, 500, n/2, vector<double> {1,1,1});
+    }
+    if (ng==3) {
+        generateGalaxyFrom(this->stars, -1500, 1500, 500, n/3, vector<double> {0,1,1});
+        generateGalaxyFrom(this->stars, 1500, -1500, 500, n/3, vector<double> {1,1,1});
+        generateGalaxyFrom(this->stars, 1500, 1500, 500, n/3, vector<double> {1,1,0});
+    }
+    
+    
+}
+
+
 // Getter and setter
 int Universe::getNStars() {
     return this->nStars;
@@ -53,11 +105,13 @@ void Universe::display() {
     for (int i=0; i<this->nStars; i++) {
         
         // relative pos
-        vector<double> pos = this->stars[i].getPos();
+        Star s = this->stars[i];
+
+        vector<double> pos = s.getPos();
         double relative_x = pos[0] / this->size;
         double relative_y = pos[1] / this->size;
 
-        glColor3f(1, 1, 1); glVertex3d(relative_x, relative_y, 0); 
+        glColor3f(s.color[0], s.color[1], s.color[2]); glVertex3d(relative_x, relative_y, 0); 
     }
 
     glEnd();

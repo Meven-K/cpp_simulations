@@ -13,7 +13,8 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 
-    Universe u1 = Universe(200, 100000);
+    Universe u1 = Universe();
+    u1.generateGalaxy(1, 800);
     cout << u1 << endl;
 
     // main
@@ -27,13 +28,9 @@ int main(int argc, char *argv[])
     Uint32 last_time = SDL_GetTicks();
     Uint32 current_time,ellapsed_time;
     Uint32 start_time; // for fps limitation
-    int step = 0;
 
     for (;;)
     {
-        cerr << endl <<endl <<  "Step " << step << endl;
-        step ++;
-
         start_time = SDL_GetTicks(); 
         while (SDL_PollEvent(&event))
         {

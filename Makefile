@@ -5,4 +5,4 @@ point:
 	g++ -Wall -o build/point test/point.cpp -lpthread -lSDL -lSDLmain -lglfw -lGL -lX11 -lXrandr -ldl
 
 main:
-	g++ -Wall -o build/galaxies src/* -lpthread -lSDL -lSDLmain -lglfw -lGL -lX11 -lXrandr -ldl -I include
+	g++ -O3 -Wall -o build/galaxies src/* -lpthread -lSDL -lSDLmain -lglfw -lGL -lX11 -lXrandr -ldl -I include

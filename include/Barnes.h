@@ -16,21 +16,24 @@ const double Gr = 0.00000000006674;
 class Node {
 public:
     // number of stars in the node
-    int n;
+    int n = 0;
     // stars in the node
     Star existingStar;
     // sons
     vector<Node*> quadrants = {NULL, NULL, NULL, NULL};
     // center of node
-    vector<double> origin; // top left corner
+    vector<double> origin {0, 0}; // top left corner
     // Size of node
-    double d;
+    double d = 0;
     // Mass related
     vector<double> centerOfMass = {0, 0};
-    double mass;
+    double mass = 0;
+    // deepness
+    int deepness = 0;
 
     // Constructor
-    Node(vector<double> origin, double d);
+    Node(vector<double> origin, double d, int deepness=0);
+
 
     // Add a star in the node
     void insertToNode(Star &s, int test=0);

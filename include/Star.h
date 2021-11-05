@@ -15,9 +15,11 @@ class Star{
     
     vector<double> pos;
     vector<double> speed = {0, 0};
-    double mass = 1000000;
 
   public:
+    double mass = 1000000000;
+
+    vector<double> color = {1, 1, 1};
 
     // Contructors
     Star();

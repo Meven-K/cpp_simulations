@@ -2,11 +2,13 @@
 
 
 // Constructor
-Node::Node(vector<double> origin, double d) {
+Node::Node(vector<double> origin, double d, int deepness) {
     this->n = 0;
     this->origin = origin;
     this->d = d;   
-}    
+    this->deepness = deepness;
+} 
+
 
 // Add a star in the node
 void Node::insertToNode(Star &s, int test) {
@@ -75,7 +77,7 @@ void Node::createSubNode(int i) {
         origin[1] += this->d / 2;
     }
 
-    this->quadrants[i] = new Node(origin, this->d/2);
+    this->quadrants[i] = new Node(origin, this->d/2, this->deepness + 1);
 }
 
 // Compute the mass distrib
@@ -106,7 +108,6 @@ vector<double> Node::computeForces(Star &target) {
     vector<double> F = {0, 0};
 
     if (this->n == 1) {
-        // cerr << "n==1 " << endl;
         if (this->existingStar != target) {
             vector<double> d = dist(this->existingStar.getPos(), target.getPos());
             double x_norm = d[0];
@@ -116,19 +117,14 @@ vector<double> Node::computeForces(Star &target) {
             F[0] = force * x_norm;
             F[1] = force * y_norm;
         }
-        // cerr << "Force : "<<F[0] << ", "<<F[1] << endl;
         return F;
 
     } else {
 
         vector<double> d = dist(this->centerOfMass, target.getPos());
         double r = d[2];
-        // cerr << "n = " << this->n << " and d/r = " << this->d/r << this->d << ", " << r << ", <" << this->centerOfMass[0] << " "<< this->centerOfMass[1] << ">, " << this->n  << endl;
 
         if(this->d/r < 0.5) { // value of theta <1 is good
-            
-            // cerr << "<" << this->centerOfMass[0] << ", " << this->centerOfMass[1] << "> ";
-            // cerr << "<" << target.getPos()[0] << ", " << target.getPos()[1] << ">" << endl;
 
             vector<double> d = dist(this->centerOfMass, target.getPos());
             double x_norm = d[0] / d[2];
@@ -188,16 +184,15 @@ Tree::Tree(vector<Star> &stars) {
         this->initialNode->insertToNode(stars[i]);
     }
 
-
     this->initialNode->computeMassDistrib();
 
-
     for (int i=0; i<(int) stars.size(); i++){
-        // cerr << "Point " << i << endl;
-
         vector<double> F = this->initialNode->computeForces(stars[i]);
+        F[0] /= stars[i].mass;
+        F[1] /= stars[i].mass;
         stars[i].setSpeed(addv(stars[i].getSpeed(), F));
     }
 }
+
 
 

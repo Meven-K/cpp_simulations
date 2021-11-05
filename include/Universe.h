@@ -7,6 +7,7 @@
 #include <SDL/SDL.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <random>
 
 #include "Tools.h"
 #include "Star.h"
@@ -19,7 +20,7 @@ class Universe{
   private:
     
     // Star field
-    int nStars = 10; // Default number of stars in the universe
+    int nStars = 0; // Default number of stars in the universe
     int size = 100; // Default size of the universe
 
   public:
@@ -31,6 +32,7 @@ class Universe{
 
     // Random universe generator
     void generate(int dx=10, int dy=10);
+    void generateGalaxy(int ng=1, int n=250);
 
     // Getter and setter
     int getNStars();
